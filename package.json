@@ -1,0 +1,20 @@
+{
+  "name": "purescript-array-reverse",
+  "version": "1.0.0",
+  "description": "A simple project to illustrate different PureScript tail recursion tools and concepts",
+  "main": "index.js",
+  "scripts": {
+    "bundle": "spago bundle-module --main Reverse --to Reverse.js",
+    "bench": "node ."
+  },
+  "type": "module",
+  "author": "Adrián Enríquez Ballester",
+  "license": "ISC",
+  "devDependencies": {
+    "benchmark": "^2.1.4",
+    "esbuild": "^0.15.1",
+    "purescript": "^0.15.4",
+    "purty": "^7.0.0",
+    "spago": "^0.20.9"
+  }
+}
