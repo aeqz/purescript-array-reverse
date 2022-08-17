@@ -86,11 +86,11 @@ reverseSTTailRecCopy arr =
         flip tailRecM { i: 0, j: length arr - 1 } \{ i, j } ->
           if j <= i then
             pure $ Done unit
-          else
+          else do
             unsafePartial do
               vi <- peek i ref
               vj <- peek j ref
               poke i vj ref
               poke j vi ref
-              pure $ Loop { i: i + 1, j: j - 1 }
+            pure $ Loop { i: i + 1, j: j - 1 }
     )

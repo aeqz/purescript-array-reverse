@@ -1,6 +1,6 @@
 # Implementing array reverse in PureScript
 
-Let us say that we want to implement a function to reverse an array in [PureScript](https://www.purescript.org), a strongly typed, purely functional and strictly evaluated programming language that compiles to JavaScript. The type signature of our function would be
+Let us say that we want to implement a function to reverse an array in [PureScript](https://www.purescript.org), a strongly typed, purely functional and strictly evaluated programming language that compiles to JavaScript. The type signature for our function would be
 
 ```haskell
 reverse :: forall a. Array a -> Array a
@@ -37,7 +37,7 @@ reversePureTailRec arr =
 
 This time, recursion is implicit: **we are defining our function within a general recursion scheme**.
 
-But all these versions have a performance problem due to purity: **every time that snoc is called, the accumulator array is entirely copied**. We can allow mutability in a controlled manner within the [ST](https://pursuit.purescript.org/packages/purescript-st/6.0.0) monad to create a [new](https://pursuit.purescript.org/packages/purescript-arrays/7.1.0/docs/Data.Array.ST#v:new) array and [push](https://pursuit.purescript.org/packages/purescript-arrays/7.1.0/docs/Data.Array.ST#v:push) the elements of the original array one by one from right to left by mutating the new one:
+But all these versions have a performance problem due to purity: **every time that uncons and snoc are called, the accumulator array is entirely copied**. We can allow mutability in a controlled manner within the [ST](https://pursuit.purescript.org/packages/purescript-st/6.0.0) monad to create a [new](https://pursuit.purescript.org/packages/purescript-arrays/7.1.0/docs/Data.Array.ST#v:new) array and [push](https://pursuit.purescript.org/packages/purescript-arrays/7.1.0/docs/Data.Array.ST#v:push) the elements of the original array one by one from right to left by mutating the new one:
 
 ```haskell
 reverseST arr =
@@ -53,7 +53,7 @@ reverseST arr =
 
 ``` 
 
-By hiding mutability within our implementation, it seems that we have solved the performance problem, but our first problem shows up again: **our go auxiliary function is not tail recursive, but monadic tail recursive, so this is again not stack safe**. Although this time the compiler cannot automatically optimize it, some monads such as the ST monad have a [MonadRec](https://pursuit.purescript.org/packages/purescript-tailrec/6.1.0/docs/Control.Monad.Rec.Class#t:MonadRec) instance, and we can proceed as before with the [tailrec](https://pursuit.purescript.org/packages/purescript-tailrec/6.1.0) package:
+By hiding mutability within our implementation, it seems that we have solved the performance problem, but our first problem shows up again: **our go auxiliary function is not tail recursive, but monadic tail recursive, so this is again not stack safe**. Although this time the compiler cannot automatically optimize it, some monads such as the ST monad have a [MonadRec](https://pursuit.purescript.org/packages/purescript-tailrec/6.1.0/docs/Control.Monad.Rec.Class#t:MonadRec) instance, and we can proceed as before with the tailrec package:
 
 ```haskell
 reverseSTTailRec arr =
@@ -108,13 +108,13 @@ reverseSTTailRecCopy arr =
         flip tailRecM { i: 0, j: length arr - 1 } \{ i, j } ->
           if j <= i then
             pure $ Done unit
-          else
+          else do
             unsafePartial do
               vi <- peek i ref
               vj <- peek j ref
               poke i vj ref
               poke j vi ref
-              pure $ Loop { i: i + 1, j: j - 1 }
+            pure $ Loop { i: i + 1, j: j - 1 }
     )
 ```
 

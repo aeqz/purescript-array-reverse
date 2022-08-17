@@ -5,8 +5,8 @@ const bench = n => {
   console.info(`Array of ${n} elements benchmark:`)
 
   const input = [...Array(n).keys()]
-
-  let suite = Benchmark.Suite()
+  
+  const suite = Benchmark.Suite()
   for (const f in Reverse)
     suite.add(f, () => Reverse[f](input))
 
