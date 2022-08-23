@@ -37,7 +37,7 @@ reversePureTailRec arr =
 
 This time, recursion is implicit: **we are defining our function within a general recursion scheme**.
 
-But all these versions have a performance problem due to purity: **every time that uncons and snoc are called, the accumulator array is entirely copied**. We can allow mutability in a controlled manner within the [ST](https://pursuit.purescript.org/packages/purescript-st/6.0.0) monad to create a [new](https://pursuit.purescript.org/packages/purescript-arrays/7.1.0/docs/Data.Array.ST#v:new) array and [push](https://pursuit.purescript.org/packages/purescript-arrays/7.1.0/docs/Data.Array.ST#v:push) the elements of the original array one by one from right to left by mutating the new one:
+But all these versions have a performance problem due to purity: **every time that uncons and snoc are called, the input and accumulator arrays are respectively copied**. We can allow mutability in a controlled manner within the [ST](https://pursuit.purescript.org/packages/purescript-st/6.0.0) monad to create a [new](https://pursuit.purescript.org/packages/purescript-arrays/7.1.0/docs/Data.Array.ST#v:new) array and [push](https://pursuit.purescript.org/packages/purescript-arrays/7.1.0/docs/Data.Array.ST#v:push) the elements of the original array one by one from right to left by mutating the new one:
 
 ```haskell
 reverseST arr =
